@@ -1,0 +1,17 @@
+{
+  "name": "download-viewcartoon",
+  "version": "1.0.0",
+  "description": "",
+  "main": "main.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "axios": "^0.27.2",
+    "images-to-pdf": "^1.0.3",
+    "node-html-parser": "^5.4.2",
+    "pdfkit": "^0.13.0"
+  }
+}
