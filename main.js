@@ -5,7 +5,7 @@ const Path = require('path')
 const { packpdf } = require('./packpdf.js')
 
 const base = "http://viewcartoon.com/manga/"
-let sleepTime = 300
+let sleepTime = 500
 
 function sleep(ms) {
 	return new Promise((resolve) => {
