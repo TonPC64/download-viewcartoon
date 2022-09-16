@@ -2,11 +2,10 @@ const parse = require('node-html-parser').parse;
 const axios = require('axios');
 const fs = require('fs')
 const Path = require('path')
-const imagesToPdf = require("images-to-pdf")
+const { packpdf } = require('./packpdf.js')
 
 const base = "http://viewcartoon.com/manga/"
-
-const sleepTime = 500
+let sleepTime = 300
 
 function sleep(ms) {
 	return new Promise((resolve) => {
@@ -56,7 +55,7 @@ async function download(name, volume, page, last) {
 			img = root.childNodes[2].childNodes[3].childNodes[2].childNodes[0].childNodes[0].attrs.src
 		}
 
-		console.log({img})
+		console.log({ img })
 		if (!img) {
 			return
 		}
@@ -80,24 +79,6 @@ async function download(name, volume, page, last) {
 	}
 }
 
-async function packpdf(name) {
-	const dir = `${__dirname}/images/${name}`
-
-	if (!fs.existsSync(dir)) {
-		console.log("not found")
-		return
-	}
-
-	const packdir = `${__dirname}/pdf`
-	const files = fs.readdirSync(dir).map(a => dir + "/" + a)
-	pname = packdir + '/' + dname.split("/").join("-") + '.pdf'
-
-	console.log(`start packing file ${files.length}`)
-
-	await imagesToPdf(files, pname)
-	console.log("done " + pname)
-}
-
 async function startDownload(name, volume, s) {
 	const uri = `${base}view.php?nme=${name}&vol=${volume}`
 
@@ -115,7 +96,7 @@ async function startDownload(name, volume, s) {
 	}
 
 	console.log({ start, last })
-	for (i = start; i <= last; i++) {
+	for (let i = start; i <= last; i++) {
 		console.log(`downloading ${i}/${last}`)
 
 		const isLast = i == last
@@ -124,11 +105,39 @@ async function startDownload(name, volume, s) {
 }
 
 async function main() {
-	// for (volume = 9035; volume > 9002; volume--) {
-		volume = 9003
-		start = 1
-		await startDownload("berserk", volume.toString(), start)
-	// }
+	let name = ""
+	let volume = ""
+	let volumeEnd = ""
+	let start = 1
+
+	var args = process.argv.slice(2);
+
+	if (args[0]) {
+		name = args[0]
+	}
+	if (args[1]) {
+		v = args[1]
+		vv = v.split("-")
+		volume = +vv[0]
+		volumeEnd = volume
+		if (vv[1]) {
+			volumeEnd = +vv[1]
+			console.log({ volume, volumeEnd })
+		}
+	}
+	if (args[2]) {
+		start = +args[2]
+	}
+
+	if (name == "" && volume == "") {
+		console.log("no name and volume");
+		return;
+	}
+
+	for (let vl = volume; vl <= volumeEnd; vl++) {
+		console.log({ name, vl: vl.toString(), start })
+		await startDownload(name, vl.toString(), start)
+	}
 }
 
 main()
