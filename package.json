@@ -10,6 +10,7 @@
   "license": "ISC",
   "dependencies": {
     "axios": "^0.27.2",
+    "cli-progress": "^3.11.2",
     "images-to-pdf": "^1.0.3",
     "node-html-parser": "^5.4.2",
     "pdfkit": "^0.13.0"

@@ -3,6 +3,9 @@ const axios = require('axios');
 const fs = require('fs')
 const Path = require('path')
 const { packpdf } = require('./packpdf.js')
+const cliProgress = require('cli-progress');
+const bar1 = new cliProgress.SingleBar({}, cliProgress.Presets.shades_classic);
+
 
 const base = "http://viewcartoon.com/manga/"
 let sleepTime = 500
@@ -55,7 +58,7 @@ async function download(name, volume, page, last) {
 			img = root.childNodes[2].childNodes[3].childNodes[2].childNodes[0].childNodes[0].attrs.src
 		}
 
-		console.log({ img })
+		// console.log({ img })
 		if (!img) {
 			return
 		}
@@ -95,13 +98,16 @@ async function startDownload(name, volume, s) {
 		}
 	}
 
-	console.log({ start, last })
+	// console.log({ start, last })
+
+	bar1.start(last, start);
 	for (let i = start; i <= last; i++) {
-		console.log(`downloading ${i}/${last}`)
+		bar1.update(i);
 
 		const isLast = i == last
 		await download(name, volume, i, isLast)
 	}
+	bar1.stop();
 }
 
 async function main() {
